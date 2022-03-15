@@ -51,10 +51,14 @@ const user = {
 const localStrategyF = passport.use(new localStrategy(
 	async (username, password, done) => {
 		try {
-			const user = findUsername(username)
+			const user = await findUsername(username)
 			if (!user) {
 				done('Algo ha salido mal local', false)
 			}
+			if (user.password !== password) {
+				done('Usuario o contra incorrecta', false)
+			}
+			// console.log(user)
 			done(null, user)
 		} catch (error) {
 			done(error, false)
