@@ -6,6 +6,8 @@ const cors = require("cors");
 const passport = require("passport");
 const local = require("./strategies/local");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
+
 
 const app = express();
 const routerApi = require("./routerApi/index");
@@ -21,12 +23,29 @@ const options = {
 		}
 	},
 };
+
+const sessionStore = MongoStore.create({
+	mongoUrl: "mongodb+srv://julioadmin:julio@cluster0.vkabi.mongodb.net/myFiaarstDatabase?retryWrites=true&w=majority",
+	collection: "sessions",
+});
+
 app.use(express.static('public'))
 app.use(cors(options));
-app.use(passport.initialize());
 app.use(
-	session({ secret: "keyboard cat", resave: false, saveUninitialized: true })
+	session({
+		key: "isAuthenticated",
+		secret: "laksjf30jf3lkajf3",
+		resave: false,
+		saveUninitialized: true,
+		store: sessionStore,
+		cookie: {
+			maxAge: 1000 * 60 * 24, //*1 day
+		},
+	})
 );
+
+app.use(passport.initialize());
+app.use(passport.session())
 
 const connectionUrl = "mongodb+srv://julioadmin:julio@cluster0.vkabi.mongodb.net/myFiaarstDatabase?retryWrites=true&w=majority";
 mongoose.connect(
