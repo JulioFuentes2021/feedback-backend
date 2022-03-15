@@ -4,5 +4,9 @@ const findUsername = async (user, cb) => {
     return await User.find({ name: user }, cb)
 }
 
-module.exports = findUsername
+const findUserById = async (id) => {
+    return await User.findById(id).exec()
+}
+
+module.exports = { findUsername, findUserById }
 

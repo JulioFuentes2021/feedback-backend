@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const port = 8000;
 const cors = require("cors");
 const passport = require("passport");
-const local = require("./strategies/local");
+const { localStrategyF } = require("./strategies/local");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 

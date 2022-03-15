@@ -2,7 +2,8 @@ const localStrategy = require("passport-local").Strategy
 const passport = require("passport");
 const bcrypt = require('bcrypt')
 const User = require("../model/user");
-const findUsername = require("../views/user");
+const { findUsername } = require("../views/user");
+const { findUserById } = require("../views/user")
 
 // const local = passport.use(
 // 	new localStrategy(async (username, password, done) => {
@@ -47,30 +48,26 @@ const user = {
 // 	});
 // }));
 
-passport.use(new localStrategy(
-	(username, password, done) => {
-		findUsername(username, (err, user) => {
-			if (err) {
-				return done(err)
-			}
-
-			// User not found
+const localStrategyF = passport.use(new localStrategy(
+	async (username, password, done) => {
+		try {
+			const user = findUsername(username)
 			if (!user) {
-				return done(null, false)
+				done('Algo ha salido mal local', false)
 			}
-
-			// Always use hashed passwords and fixed time comparison
-			bcrypt.compare(password, user.passwordHash, (err, isValid) => {
-				if (err) {
-					return done(err)
-				}
-				if (!isValid) {
-					return done(null, false)
-				}
-				return done(null, user)
-			})
-		})
+			done(null, user)
+		} catch (error) {
+			done(error, false)
+		}
 	}
 ))
 
-// module.exports = local;
+// passport.serializeUser((user, done) => {
+// 	done(null, user.id)
+// })
+
+// passport.deserializeUser((id, done) => {
+// 	done(null, id)
+// })
+
+module.exports = { localStrategyF };
