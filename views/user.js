@@ -8,5 +8,9 @@ const findUserById = async (id) => {
     return await User.findById(id).exec()
 }
 
-module.exports = { findUsername, findUserById }
+const users = async () => {
+    return await User.find();
+}
+
+module.exports = { findUsername, findUserById, users }
 

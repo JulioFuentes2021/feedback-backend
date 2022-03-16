@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = {
 	username: String,
-	password: String,
+	password: { type: String, default: null, select: false },
 };
 
 const User = mongoose.model("User", userSchema);
