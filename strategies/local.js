@@ -52,19 +52,25 @@ const localStrategyF = passport.use(new localStrategy(
 	async (username, password, done) => {
 		try {
 			const user = await findUsername(username)
+			console.log(user)
+
 			if (!user) {
 				done('Algo ha salido mal local', false)
 			}
-			if (user.password !== password) {
+
+			const isMatch = await bcrypt.compare(password, user.password)
+			if (!isMatch) {
 				done('Usuario o contra incorrecta', false)
 			}
-			// console.log(user)
 			done(null, user)
 		} catch (error) {
 			done(error, false)
 		}
 	}
 ))
+
+// passport.use(passport.initialize());
+// passport.use(passport.session())
 
 // passport.serializeUser((user, done) => {
 // 	done(null, user.id)

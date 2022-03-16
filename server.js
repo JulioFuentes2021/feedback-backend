@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const port = 8000;
 const cors = require("cors");
 const passport = require("passport");
-const { localStrategyF } = require("./strategies/local");
+// const { localStrategyF } = require("./strategies/local");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
@@ -44,6 +44,7 @@ app.use(
 	})
 );
 
+//require('./strategies/index') //!En platzi asi conectaron la estrategia
 app.use(passport.initialize());
 app.use(passport.session())
 
