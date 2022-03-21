@@ -7,6 +7,7 @@ const passport = require("passport");
 // const { localStrategyF } = require("./strategies/local");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const { catchError, handleError } = require("./middleware/error.handler");
 
 
 const app = express();
@@ -67,5 +68,8 @@ app.get("/", (req, res) => {
 });
 
 routerApi(app);
+
+// app.use(catchError)
+// app.use(handleError)
 
 app.listen(port, () => console.log("Server is ready..."));
