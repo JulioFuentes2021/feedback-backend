@@ -7,7 +7,7 @@ const authentication = require("../middleware/authentication");
 const router = Router();
 
 router.post("/", passport.authenticate('local', { session: true }), (req, res, next) => {
-	console.log(req.body)
+	console.log(res.body);
 	try {
 		res.status(200).json({
 			message: "Sign In is successfully"
