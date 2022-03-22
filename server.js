@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const port = 8000;
+const port = 5000;
 const cors = require("cors");
 const passport = require("passport");
 // const { localStrategyF } = require("./strategies/local");
