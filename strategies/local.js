@@ -52,19 +52,20 @@ const localStrategyF = passport.use(new localStrategy(
 	async (username, password, done) => {
 		try {
 			const user = await findUsername(username)
-			console.log(user)
+			//console.log(user)
 
 			if (!user) {
-				done('Algo ha salido mal local', false)
+				return done(null, false)
 			}
 
 			const isMatch = await bcrypt.compare(password, user.password)
 			if (!isMatch) {
-				done('Usuario o contra incorrecta', false)
+				// console.log('Usuario o contra incorrecta')
+				return done(null, false, { message: 'Incorrect username or password.' })
 			}
-			done(null, user)
+			return done(null, user)
 		} catch (error) {
-			done(error, false)
+			return done(error, false)
 		}
 	}
 ))
