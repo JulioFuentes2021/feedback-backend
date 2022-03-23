@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Feedback = require("../model/message");
+const passport = require("passport");
 
 router.get("/", (req, res) => {
 	res.send("Express.js is amazing :)");
@@ -12,9 +13,11 @@ router.get("/all", async (req, res) => {
 	res.json(data);
 });
 
-router.post("/add", (req, res) => {
+
+//! El usuario que finalmente se le asigno ese token desde el cliente debe ahora continuamente enviar estos tokens en los header para que se mantenga la sesion.
+router.post("/add", passport.authenticate('jwt', { session: false }), (req, res) => {
 	const { title, feature, description } = req.body;
-	res.end();
+	//res.end();
 	// res.status(200).json({ message: "Correcto..." });
 	const newFeedback = new Feedback({
 		title: title,
@@ -24,6 +27,9 @@ router.post("/add", (req, res) => {
 	//Guarda la base de datos
 	newFeedback.save();
 	console.log(req.body);
+	res.json({
+		messsage: "Exitos"
+	})
 });
 
 module.exports = router;

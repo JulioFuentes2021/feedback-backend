@@ -7,6 +7,7 @@ const passport = require("passport");
 // const { localStrategyF } = require("./strategies/local");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const { JwtStrategy } = require("./strategies/jwt")
 const { catchError, handleError } = require("./middleware/error.handler");
 
 
@@ -45,7 +46,7 @@ app.use(
 	})
 );
 
-//require('./strategies/index') //!En platzi asi conectaron la estrategia
+//require('./strategies/jwt') //!En platzi asi conectaron la estrategia
 app.use(passport.initialize());
 app.use(passport.session())
 
