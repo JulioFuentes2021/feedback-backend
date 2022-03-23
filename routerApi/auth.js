@@ -8,24 +8,28 @@ const config = require('../config/config')
 
 const router = Router();
 
-router.post("/login", async (req, res) => {
-	const { username, password } = req.body;
-	const hash = await bcrypt.hash(password, 10)
-	const newUser = new User({ username, password: hash });
-	newUser.save();
-	delete password
+router.post("/login", async (req, res, next) => {
+	try {
+		const { username, password } = req.body;
+		const hash = await bcrypt.hash(password, 10)
+		const newUser = new User({ username, password: hash });
+		await newUser.save();
+		delete password
 
-	const payload = {
-		sub: username.id,
-		role: username.role
+		const payload = {
+			sub: username.id,
+			role: username.role
+		}
+
+		const token = jwt.sign(payload, config.jwtSecret);
+		console.log("SIuuuu")
+		res.json({
+			user: req.body,
+			token
+		});
+	} catch (error) {
+		next(error)
 	}
-
-	const token = jwt.sign(payload, config.jwtSecret);
-	console.log("SIuuuu")
-	res.json({
-		user: req.body,
-		token
-	});
 });
 
 router.get("/users", async (req, res) => {

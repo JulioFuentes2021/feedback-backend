@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const feedbackSchema = {
     title: String,
     feature: String,
-    description: String
+    description: {
+        type: String,
+        required: true
+    }
 };
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);

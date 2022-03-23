@@ -70,7 +70,7 @@ app.get("/", (req, res) => {
 
 routerApi(app);
 
-// app.use(catchError)
-// app.use(handleError)
+app.use(catchError)
+app.use(handleError)
 
 app.listen(port, () => console.log("Server is ready..."));
