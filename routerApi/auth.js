@@ -1,10 +1,11 @@
 const { Router } = require("express");
 const passport = require("passport");
 const User = require("../model/user");
-const bcrypt = require("bcrypt")
-const { users } = require("../views/user")
+const bcrypt = require("bcrypt");
+const { users } = require("../views/user");
 const jwt = require('jsonwebtoken');
-const config = require('../config/config')
+const config = require('../config/config');
+const boom = require('@hapi/boom');
 
 const router = Router();
 
@@ -22,13 +23,12 @@ router.post("/login", async (req, res, next) => {
 		}
 
 		const token = jwt.sign(payload, config.jwtSecret);
-		console.log("SIuuuu")
 		res.json({
 			user: req.body,
 			token
 		});
 	} catch (error) {
-		next(error)
+		next(boom.badRequest('You need an username and password to create an account'))
 	}
 });
 
