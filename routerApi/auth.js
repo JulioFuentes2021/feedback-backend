@@ -23,11 +23,16 @@ router.post(
 			delete password;
 
 			const payload = {
-				sub: username.id,
-				role: username.role,
+				sub: newUser._id,
+				// role: username.role,
 			};
 
+			console.log(payload);
+
 			const token = jwt.sign(payload, config.jwtSecret);
+			res.cookie("token", token)
+
+			console.log("Cookies desde auth/login: ", req.cookies);
 			res.json({
 				user: req.body,
 				token,

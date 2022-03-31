@@ -9,13 +9,15 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const { JwtStrategy } = require("./strategies/jwt")
 const { catchError, handleError } = require("./middleware/error.handler");
+const cookieparser = require("cookie-parser");
 
 
 const app = express();
 const routerApi = require("./routerApi/index");
 app.use(express.json());
+app.use(cookieparser());
 
-const whitelist = ["http://localhost:8000/"];
+const whitelist = ["http://localhost:5000/", "http://localhost:3000/"];
 const options = {
 	origin: (origin, callback) => {
 		if (whitelist.includes(origin) !== 1) {
@@ -32,17 +34,17 @@ const sessionStore = MongoStore.create({
 });
 
 app.use(express.static('public'))
-app.use(cors(options));
+app.use(cors());
 app.use(
 	session({
-		key: "isAuthenticated",
+		// key: "isAuthenticated2022f",
 		secret: "laksjf30jf3lkajf3",
 		resave: false,
 		saveUninitialized: true,
 		store: sessionStore,
-		cookie: {
-			maxAge: 1000 * 60 * 24, //*1 day
-		},
+		// cookie: {
+		// 	maxAge: 1000 * 60 * 24, //*1 day
+		// },
 	})
 );
 
@@ -60,7 +62,9 @@ mongoose.connect(
 	}
 );
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+
 
 // app.use(express.json);
 
