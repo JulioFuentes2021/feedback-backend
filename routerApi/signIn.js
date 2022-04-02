@@ -23,7 +23,7 @@ const authenticate = (req, res, next) => {
 	try {
 		const data = jwt.verify(token, config.jwtSecret)
 		const name = data.name
-		res.cookie("name", name, { httpOnly: true });
+		res.cookie("name", name);
 		console.log('Este es el data.sub: ', data.sub)
 		console.log('El token esta bueno')
 	} catch (err) {
