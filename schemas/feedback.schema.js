@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const title = Joi.string()
 const feature = Joi.string()
-const description = Joi.string().alphanum().min(3).max(50);
+const description = Joi.string().min(3).max(50);
 const username = Joi.string().alphanum().min(3).max(10);
 const password = Joi.string().alphanum().min(3).max(15);
 
