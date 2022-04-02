@@ -21,7 +21,7 @@ const options = {
 
 //* El payload ya lo recibimos automaticamente
 const JwtStrategy = passport.use(new Strategy(options, (payload, done) => {
-    // console.log('Im here')
+    console.log(payload)
     return done(null, payload)
 }));
 

@@ -24,14 +24,16 @@ router.post(
 
 			const payload = {
 				sub: newUser._id,
-				// role: username.role,
+				name: newUser.username,
 			};
 
 			console.log(payload);
 
 			const token = jwt.sign(payload, config.jwtSecret);
-			res.cookie("token", token)
-
+			res.cookie("token", token, {
+				// httpOnly: true,
+				// domain: 'localhost:3000'
+			});
 			console.log("Cookies desde auth/login: ", req.cookies);
 			res.json({
 				user: req.body,

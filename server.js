@@ -17,7 +17,7 @@ const routerApi = require("./routerApi/index");
 app.use(express.json());
 app.use(cookieparser());
 
-const whitelist = ["http://localhost:5000/", "http://localhost:3000/"];
+const whitelist = ["http://localhost:3000"];
 const options = {
 	origin: (origin, callback) => {
 		if (whitelist.includes(origin) !== 1) {
@@ -34,7 +34,11 @@ const sessionStore = MongoStore.create({
 });
 
 app.use(express.static('public'))
-app.use(cors());
+app.use(cors({
+	credentials: true,
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	origin: ['http://localhost:3000']
+}));
 app.use(
 	session({
 		// key: "isAuthenticated2022f",
