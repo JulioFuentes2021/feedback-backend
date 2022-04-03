@@ -24,9 +24,9 @@ router.get("/all", async (req, res) => {
 
 const authenticate = (req, res, next) => {
 	const authHeader = req.headers['authorization']
-	const token = authHeader && authHeader.split(' ')[1].split('=')[1]
+	const token = authHeader && authHeader.split(';')[0].split(' ')[1].split('=')[1]
 	if (token == null) return res.sendStatus(401)
-	console.log(token);
+	console.log('Este es el token', token);
 	// console.log('Este es el header: ', authHeader);
 	console.log('COookies desde el signIN ppapa: ', req.cookies)
 
