@@ -7,7 +7,6 @@ const feedbackSchema = {
         type: String,
         required: true
     },
-    upvote: 
 };
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);
