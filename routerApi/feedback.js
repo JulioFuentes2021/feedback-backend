@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
 
 router.get("/all", async (req, res) => {
 	const data = await Feedback.find({});
-	// console.log(data._id);
 	res.json(data);
 });
 
@@ -42,25 +41,17 @@ const authenticate = (req, res, next) => {
 	}
 
 	next()
-	// console.log('Ejecutando')
-	// const token = req.cookies.token;
-	// if (!token) {
-	// 	return res.sendStatus(403)
-	// }
 }
 
 //! El usuario que finalmente se le asigno ese token desde el cliente debe ahora continuamente enviar estos tokens en los header para que se mantenga la sesion.
 router.post(
 	"/add",
-	// passport.authenticate("jwt", { session: false }),
 	authenticate,
 	validatorHandler(createFeedbackValidation, "body"),
 	async (req, res, next) => {
 		try {
 			const { title, feature, description } = req.body;
-			//res.end();
 			console.log(req.body)
-			// res.status(200).json({ message: "Correcto..." });
 			const newFeedback = new Feedback({
 				title: title,
 				feature: feature,
@@ -70,7 +61,6 @@ router.post(
 			});
 			//Guarda la base de datos
 			await newFeedback.save();
-			console.log(req.body);
 			res.json({
 				messsage: "Exitos",
 			});

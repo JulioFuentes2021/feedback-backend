@@ -32,11 +32,6 @@ const authenticate = (req, res, next) => {
 	}
 
 	next()
-	// console.log('Ejecutando')
-	// const token = req.cookies.token;
-	// if (!token) {
-	// 	return res.sendStatus(403)
-	// }
 }
 
 const test = (req, res, next) => {
@@ -57,18 +52,10 @@ router.post(
 	passport.authenticate("local", { session: true }),
 	test,
 	(req, res) => {
-		// console.log(req.session.messages);
-		// try {
-		// 	// if (err) console.log("Mididi")
-		// 	console.log("Aquii")
 		res.status(200).json({
 			message: "Sign In is successfully",
 		});
 
-		// } catch (error) {
-		// 	// console.log("Error desde post del loginnnnmn")
-		// 	next(err)
-		// }
 	}
 );
 
@@ -80,15 +67,6 @@ router.post("/delete", async (req, res) => {
 
 
 })
-
-// router.post("/", (req, res, next) => {
-// 	passport.authenticate('local', { session: true }, (err, user, info) => {
-// 		if (err) next(err)
-// 		res.status(200).json({
-// 			message: "Sign In is successfully"
-// 		})
-// 	})
-// });
 
 passport.serializeUser(function (user, cb) {
 	process.nextTick(function () {
