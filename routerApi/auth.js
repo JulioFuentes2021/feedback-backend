@@ -22,18 +22,18 @@ router.post(
 			await newUser.save();
 			delete password;
 
-			const payload = {
-				sub: newUser._id,
-				name: newUser.username,
-			};
+			// const payload = {
+			// 	sub: newUser._id,
+			// 	name: newUser.username,
+			// };
 
-			console.log(payload);
+			// console.log(payload);
 
-			const token = jwt.sign(payload, config.jwtSecret);
-			res.cookie("token", token, {
-				// httpOnly: true,
-				// domain: 'localhost:3000'
-			});
+			// const token = jwt.sign(payload, config.jwtSecret);
+			// res.cookie("token", token, {
+			// 	// httpOnly: true,
+			// 	// domain: 'localhost:3000'
+			// });
 			console.log("Cookies desde auth/login: ", req.cookies);
 			res.json({
 				user: req.body,

@@ -39,11 +39,23 @@ const authenticate = (req, res, next) => {
 	// }
 }
 
+const test = (req, res, next) => {
+	const payload = {
+		sub: req.body.username,
+		// name: user.username,
+	};
+
+	const token = jwt.sign(payload, config.jwtSecret);
+	res.cookie('token', token)
+	next()
+}
+
 router.post(
 	"/",
-	authenticate,
-	passport.authenticate("local", { session: true }),
+	// authenticate,
 	validatorHandler(loginAndSignInValidator, "body"),
+	passport.authenticate("local", { session: true }),
+	test,
 	(req, res) => {
 		// console.log(req.session.messages);
 		// try {

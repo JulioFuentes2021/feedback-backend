@@ -59,11 +59,14 @@ router.post(
 		try {
 			const { title, feature, description } = req.body;
 			//res.end();
+			console.log(req.body)
 			// res.status(200).json({ message: "Correcto..." });
 			const newFeedback = new Feedback({
 				title: title,
 				feature: feature,
 				description: description,
+				// test: test
+				test: [{ name: 'Julio opao' }]
 			});
 			//Guarda la base de datos
 			await newFeedback.save();
