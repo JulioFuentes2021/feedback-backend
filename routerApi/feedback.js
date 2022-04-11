@@ -7,7 +7,7 @@ const { createFeedbackValidation } = require("../schemas/feedback.schema");
 const validatorHandler = require("../middleware/validator.handler");
 const config = require('../config/config');
 const jwt = require('jsonwebtoken');
-
+const addUpvotes = require('../views/Feeedback');
 
 router.get("/", (req, res) => {
 	res.send("Express.js is amazing :)");
@@ -57,10 +57,10 @@ router.post(
 				feature: feature,
 				description: description,
 				// test: test
-				test: [{ name: 'Julio opao' }]
 			});
 			//Guarda la base de datos
 			await newFeedback.save();
+			// await newFeedback.deleteMany();
 			res.json({
 				messsage: "Exitos",
 			});
@@ -69,5 +69,35 @@ router.post(
 		}
 	}
 );
+
+router.delete('/delete', async (req, res) => {
+	await Feedback.deleteMany()
+	res.send('ELiminados')
+})
+
+
+
+
+const getPayload = (req, res, next) => {
+	const jwtToken = req.headers['authorization'].split(' ')[1];
+	const payload = jwt.verify(jwtToken, config.jwtSecret);
+	req.body.payload = payload;
+	next()
+}
+
+const test = (req, res, next) => {
+	console.log('Middleware: ', req.body)
+	req.body.name = 'Julioooo'
+	next()
+}
+
+//Create the upvote by patch,put and understang how can I implement it in mongoose.
+router.patch('/addUpvote', passport.authenticate('jwt'), getPayload, test, (req, res) => {
+	const { test } = req.body
+	console.log('Final body', req.body)
+	console.log(req.headers['authorization'])
+	addUpvotes(req.body.id, req.body.payload.sub)
+	res.send('Aquii andamos')
+})
 
 module.exports = router;

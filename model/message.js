@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const testSchema = { name: { type: Number, default: 1234 } };
+const testSchema = { name: { type: String, default: [] } };
 
 const feedbackSchema = {
     title: String,
@@ -13,7 +13,10 @@ const feedbackSchema = {
         type: Number,
         default: 0,
     },
-    test: [{ name: String }],
+    test: {
+        type: [String],
+        default: []
+    },
 };
 
 const Feedback = mongoose.model("Feedback", feedbackSchema);
