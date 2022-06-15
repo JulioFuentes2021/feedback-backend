@@ -10,7 +10,10 @@ const MongoStore = require("connect-mongo");
 const { JwtStrategy } = require("./strategies/jwt")
 const { catchError, handleError } = require("./middleware/error.handler");
 const cookieparser = require("cookie-parser");
-
+//SocketServer
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const socket = require("./socket/socket");
 
 const app = express();
 const routerApi = require("./routerApi/index");
@@ -81,4 +84,23 @@ routerApi(app);
 app.use(catchError)
 app.use(handleError)
 
-app.listen(port, () => console.log("Server is ready..."));
+
+
+const httpServer = createServer(app);
+
+httpServer.listen(port, () => {
+	console.log('Server is ready in the port 8000')
+})
+// app.listen(port, () => console.log("Server is ready..."));
+const io = new Server(httpServer, {
+	cors: {
+		origin: ["http://localhost:3000"],
+		// allowedHeaders: ["my-custom-header"],
+		credentials: true
+	}
+});
+// io.on("connection", (socket) => {
+// 	console.log("User connected")
+// })
+
+socket(io)

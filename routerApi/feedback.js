@@ -46,8 +46,9 @@ const authenticate = (req, res, next) => {
 //! El usuario que finalmente se le asigno ese token desde el cliente debe ahora continuamente enviar estos tokens en los header para que se mantenga la sesion.
 router.post(
 	"/add",
-	authenticate,
+	// authenticate,
 	validatorHandler(createFeedbackValidation, "body"),
+	passport.authenticate('jwt', { session: false }),
 	async (req, res, next) => {
 		try {
 			const { title, feature, description } = req.body;
@@ -65,6 +66,7 @@ router.post(
 				messsage: "Exitos",
 			});
 		} catch (error) {
+			console.log(error)
 			next(boom.badRequest("Title, feature and description are required."));
 		}
 	}

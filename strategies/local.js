@@ -3,8 +3,8 @@ const passport = require("passport");
 const bcrypt = require('bcrypt')
 const User = require("../model/user");
 const { findUsername } = require("../views/user");
-const { findUserById } = require("../views/user")
-
+const { findUserById } = require("../views/user");
+const jsonwebtoken = require('jsonwebtoken');
 
 const localStrategyF = passport.use(new localStrategy(
 	async (username, password, done) => {
@@ -15,6 +15,7 @@ const localStrategyF = passport.use(new localStrategy(
 				return done(null, false)
 			}
 
+			// const { id } = jwt.verify(user.password, process.env.JWT_REFRESH)
 			const isMatch = await bcrypt.compare(password, user.password)
 			if (!isMatch) {
 				// console.log('Usuario o contra incorrecta')

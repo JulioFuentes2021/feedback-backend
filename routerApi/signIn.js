@@ -9,6 +9,8 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const User = require("../model/user");
 const boom = require("@hapi/boom");
+const bcrypt = require('bcrypt');
+const { generateToken, generateRefreshToken } = require('../middleware/jwt');
 
 const router = Router();
 
@@ -49,13 +51,31 @@ router.post(
 	"/",
 	// authenticate,
 	validatorHandler(loginAndSignInValidator, "body"),
-	passport.authenticate("local", { session: true }),
-	test,
-	(req, res) => {
-		res.status(200).json({
-			message: "Sign In is successfully",
-		});
+	// passport.authenticate("local", { session: true }),
+	async (req, res, next) => {
+		try {
+			const { username, password } = req.body;
+			const hash = await bcrypt.hash(password, 10);
+			const newUser = new User({ username, password: hash });
+			await newUser.save();
+			delete password;
 
+			console.log("Cookies desde auth/login: ", newUser.id);
+			// const { token, expiresIn } = generateToken(newUser.id);
+			// generateRefreshToken(newUser.id, res)
+
+			res.json({
+				user: req.body,
+				// token,
+			});
+		} catch (error) {
+			console.log(error)
+			next(
+				boom.badRequest(
+					"You need an username and password to create an account"
+				)
+			);
+		}
 	}
 );
 
