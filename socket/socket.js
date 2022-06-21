@@ -27,8 +27,24 @@ const socket = (io) => {
         })
         // console.log(socket)
 
-        socket.on("test", (data) => {
-            console.log(data.message)
+        socket.on("test", async (data) => {
+            // const id = socket.request.user.id;
+            const id = data.id;
+            // const all = Feedback.findById(id, function (err, user) {
+            //     if (err) {
+            //         console.log("Erroror: ", err)
+            //     } else {
+            //         console.log('user', user)
+            //     }
+            // });
+            const upvoteBeforeSum = await Feedback.findOne({ _id: id });
+            console.log('beforesum', upvoteBeforeSum)
+            // await Feedback.updateOne({ id: id }, { $set: { "upvotes": upvoteBeforeSum.upvotes + 1 } })
+            await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": upvoteBeforeSum.upvotes + 1 } })
+
+            const all = await Feedback.find({});
+            io.emit("update", all)
+            console.log('Id', id)
         })
 
         socket.on("addFeedback", async (data) => {
