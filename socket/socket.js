@@ -23,7 +23,13 @@ const socket = (io) => {
         // const all = await Feedback.find();
         socket.on("get", async () => {
             const all = await Feedback.find();
+            const allFeedbacks = all.length;
+            socket.emit("suggestions", allFeedbacks)
             socket.emit("getFeed", all)
+        })
+
+        socket.on("getSuggestions", () => {
+
         })
         // console.log(socket)
 
@@ -81,8 +87,10 @@ const socket = (io) => {
             //Guarda la base de datos
             await newFeedback.save();
             const all = await Feedback.find({});
-            // console.log('All', all)
+            // console.log('All', all.length)
             io.emit("update", all)
+            const allFeedbacks = all.length;
+            io.emit("suggestions", allFeedbacks)
         })
     })
 
