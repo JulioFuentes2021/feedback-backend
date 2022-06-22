@@ -25,7 +25,7 @@ const JwtStrategy = passport.use(new Strategy(options, (payload, done) => {
     // console.log(payload)
     // return done(null, payload)
     console.log('Payload', payload)
-    User.findOne({ id: payload.id }, function (err, user) {
+    User.findOne({ _id: payload.id }, function (err, user) {
         if (err) {
             return done(err, false);
         }

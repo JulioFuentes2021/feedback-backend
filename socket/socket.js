@@ -27,24 +27,47 @@ const socket = (io) => {
         })
         // console.log(socket)
 
+        socket.use(async (packet, next) => {
+            console.log("Middleware en un eventoo....", packet)
+
+            if (packet[0] === "test") {
+                const feedback = await Feedback.findOne({ _id: packet[1].id })
+                console.log('Test', feedback, packet[1].id)
+                const user = feedback.test.find(id => id === socket.request.user.id)
+                console.log('Encontrado', user)
+                socket.request.votes = feedback.upvotes;
+                if (user !== undefined) {
+                    socket.request.operation = "-"
+                    await Feedback.updateOne({ _id: packet[1].id }, { $pull: { "test": socket.request.user.id } })
+                } else {
+                    socket.request.operation = "+"
+                    await Feedback.findOneAndUpdate({ _id: packet[1].id }, { $addToSet: { "test": [socket.request.user.id] } })
+
+                }
+
+            }
+
+            next()
+        })
+
         socket.on("test", async (data) => {
             // const id = socket.request.user.id;
             const id = data.id;
-            // const all = Feedback.findById(id, function (err, user) {
-            //     if (err) {
-            //         console.log("Erroror: ", err)
-            //     } else {
-            //         console.log('user', user)
-            //     }
-            // });
-            const upvoteBeforeSum = await Feedback.findOne({ _id: id });
-            console.log('beforesum', upvoteBeforeSum)
+            console.log("OP", socket.request.operation)
+
+            // const upvoteBeforeSum = await Feedback.findOne({ _id: id });
+            // console.log('beforesum', upvoteBeforeSum)
             // await Feedback.updateOne({ id: id }, { $set: { "upvotes": upvoteBeforeSum.upvotes + 1 } })
-            await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": upvoteBeforeSum.upvotes + 1 } })
+
+            if (socket.request.operation === "+") {
+                await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes + 1 } })
+            } else {
+                await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes - 1 } })
+            }
 
             const all = await Feedback.find({});
             io.emit("update", all)
-            console.log('Id', id)
+            console.log('Id', socket.request.user)
         })
 
         socket.on("addFeedback", async (data) => {
