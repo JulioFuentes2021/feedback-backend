@@ -54,9 +54,9 @@ router.post(
 	// passport.authenticate("local", { session: true }),
 	async (req, res, next) => {
 		try {
-			const { username, password } = req.body;
+			const { username, password, mail } = req.body;
 			const hash = await bcrypt.hash(password, 10);
-			const newUser = new User({ username, password: hash });
+			const newUser = new User({ username, password: hash, mail });
 			await newUser.save();
 			delete password;
 

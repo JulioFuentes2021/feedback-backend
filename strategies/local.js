@@ -7,15 +7,16 @@ const { findUserById } = require("../views/user");
 const jsonwebtoken = require('jsonwebtoken');
 
 const localStrategyF = passport.use(new localStrategy(
-	async (username, password, done) => {
+	async (mail, password, done) => {
 		try {
-			const user = await findUsername(username)
+			const user = await findUsername(mail)
 
 			if (!user) {
 				return done(null, false)
 			}
 
 			// const { id } = jwt.verify(user.password, process.env.JWT_REFRESH)
+			console.log("This is the mail", mail)
 			const isMatch = await bcrypt.compare(password, user.password)
 			if (!isMatch) {
 				// console.log('Usuario o contra incorrecta')
