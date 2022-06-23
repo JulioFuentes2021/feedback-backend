@@ -8,6 +8,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 const localStrategyF = passport.use(new localStrategy(
 	async (mail, password, done) => {
+		console.log("Entro")
 		try {
 			const user = await findUsername(mail)
 

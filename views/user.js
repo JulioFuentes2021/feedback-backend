@@ -1,7 +1,7 @@
 const User = require("../model/user");
 
-const findUsername = async (user, cb) => {
-    return await User.findOne({ username: user })
+const findUsername = async (mail, cb) => {
+    return await User.findOne({ mail: mail })
 }
 
 const findUserById = async (id) => {
