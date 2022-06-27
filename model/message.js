@@ -17,6 +17,10 @@ const feedbackSchema = {
         type: [String],
         default: []
     },
+    comment: {
+        type: [{ text: String, replies: [String] }],
+        default: []
+    }
 };
 
 const Feedback = mongoose.model("Feedback", feedbackSchema);

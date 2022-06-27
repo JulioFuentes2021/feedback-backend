@@ -43,6 +43,25 @@ const authenticate = (req, res, next) => {
 	next()
 }
 
+router.get('/comment/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		console.log('IDIDI', id)
+		const comment = await Feedback.findOne({ _id: id })
+		res.json({ feedback: comment })
+	} catch (error) {
+		res.status(404).json({ message: error.message })
+	}
+});
+
+
+router.post('/comment/add', async (req, res) => {
+	const comment = req.body.comment;
+	await Feedback.findByIdAndUpdate({ _id: req.body.id }, { $addToSet: { comment: { text: comment } } })
+	// console.log('comment', req.body)
+	res.json({ message: "Comment added successfully" })
+})
+
 //! El usuario que finalmente se le asigno ese token desde el cliente debe ahora continuamente enviar estos tokens en los header para que se mantenga la sesion.
 router.post(
 	"/add",

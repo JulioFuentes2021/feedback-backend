@@ -28,9 +28,13 @@ const socket = (io) => {
             socket.emit("getFeed", all)
         })
 
-        socket.on("getSuggestions", () => {
+        socket.on("getSuggestions", async (data) => {
+            // const comment = req.body.comment;
+            const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment } } })
 
+            io.emit("receiverSuggestions", feedback)
         })
+
         // console.log(socket)
 
         socket.use(async (packet, next) => {

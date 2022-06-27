@@ -11,10 +11,13 @@ const cookieparser = require("cookie-parser");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const Sockets = require('./socket/socket');
+const bodyParser = require('body-parser');
 
 // const { JwtStrategy } = require('./strategies/jwt')
 const app = express();
 const routerApi = require("./routerApi/index");
+// app.use(bodyParser.urlencoded({ extended: true }))
+app.set('query parser', true)
 app.use(express.json());
 app.use(cookieparser());
 
