@@ -30,9 +30,24 @@ const socket = (io) => {
 
         socket.on("getSuggestions", async (data) => {
             // const comment = req.body.comment;
-            const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment } } })
+            const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
+            console.log(socket.request.user)
 
-            io.emit("receiverSuggestions", feedback)
+            io.emit("receiverSuggestions", { username: socket.request.user.username, mail: socket.request.user.mail })
+        })
+
+        socket.on("addReply", async (data) => {
+            console.log(data)
+            // const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment[2].replies: "something" } })
+            const feedback = await Feedback.findOne({ _id: data.feedbackId })
+            // const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
+            // const doc = Feedback.comment.id("62ba4ef587bf7203aa05cea6")
+            feedback.comment.id(data.replyId).replies.push({ text: data.mail + " " + data.reply, creator: socket.request.user.username, mail: socket.request.user.mail })
+            await feedback.save()
+            console.log("reply", feedback.comment.id(data.replyId))
+
+            io.emit("receiverSuggestions")
+            // console.log('REply Id', data.replyId)
         })
 
         // console.log(socket)

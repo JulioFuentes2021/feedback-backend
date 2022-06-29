@@ -18,7 +18,7 @@ const feedbackSchema = {
         default: []
     },
     comment: {
-        type: [{ text: String, replies: [String] }],
+        type: [{ text: String, creator: String, mail: String, replies: [{ text: String, creator: String, mail: String }] }],
         default: []
     }
 };
