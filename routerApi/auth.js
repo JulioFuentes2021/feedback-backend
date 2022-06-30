@@ -12,7 +12,7 @@ const router = Router();
 
 router.post(
 	"/login",
-	validatorHandler(loginAndSignInValidator, "body"),
+	// validatorHandler(loginAndSignInValidator, "body"),
 	passport.authenticate('local'),
 	async (req, res, next) => {
 		try {

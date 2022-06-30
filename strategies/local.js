@@ -11,7 +11,7 @@ const localStrategyF = passport.use(new localStrategy(
 		console.log("Entro")
 		try {
 			const user = await findUsername(mail)
-
+			console.log(user)
 			if (!user) {
 				return done(null, false)
 			}
