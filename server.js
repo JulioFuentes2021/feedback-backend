@@ -7,6 +7,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const { catchError, handleError } = require("./middleware/error.handler");
 const cookieparser = require("cookie-parser");
+const timeout = require('connect-timeout')
 //SocketServer
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -37,6 +38,7 @@ const sessionStore = MongoStore.create({
 	collection: "sessions",
 });
 
+app.use(timeout('5s'))
 app.use(express.static('public'))
 app.use(cors({
 	credentials: true,

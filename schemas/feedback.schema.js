@@ -1,11 +1,11 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
-const title = Joi.string()
-const feature = Joi.string()
+const title = Joi.string().min(3).max(20);
+const feature = Joi.string();
 const description = Joi.string().max(250);
 const username = Joi.string().min(3).max(20);
-const password = Joi.string().min(3).max(15);
-const mail = Joi.string().min(3).max(15);
+const password = Joi.string().min(3).max(35);
+const mail = Joi.string().min(3).max(35);
 
 const createFeedbackValidation = Joi.object({
     title: title.required(),
@@ -17,12 +17,12 @@ const loginAndSignInValidator = Joi.object({
     password: password.required(),
     username: username.required(),
     mail: mail.required(),
-})
+});
 
 const loginValidator = Joi.object({
     password: password.required(),
     username: username.required(),
     mail: mail.required(),
-})
+});
 
-module.exports = { createFeedbackValidation, loginAndSignInValidator }
+module.exports = { createFeedbackValidation, loginAndSignInValidator };

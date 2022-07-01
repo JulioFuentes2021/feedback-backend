@@ -1,5 +1,7 @@
 const Feedback = require("../model/message");
 const passport = require('passport');
+const validatorHandler = require('../middleware/validator.handler');
+const { createFeedbackValidation } = require('../schemas/feedback.schema');
 
 const socket = (io) => {
     const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
@@ -69,7 +71,12 @@ const socket = (io) => {
                     await Feedback.findOneAndUpdate({ _id: packet[1].id }, { $addToSet: { "test": [socket.request.user.id] } })
 
                 }
-
+            } else if (packet[0] === "addFeedback") {
+                const { error } = createFeedbackValidation.validate(packet[1])
+                if (error) {
+                    return next(new Error(error))
+                }
+                console.log('Validator handler')
             }
 
             next()

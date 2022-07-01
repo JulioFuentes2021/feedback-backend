@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 router.get("/all", async (req, res) => {
 	const data = await Feedback.find({});
-	res.json(data);
+	// res.json(data);
 });
 
 
@@ -67,7 +67,7 @@ router.post(
 	"/add",
 	// authenticate,
 	validatorHandler(createFeedbackValidation, "body"),
-	passport.authenticate('jwt', { session: false }),
+	// passport.authenticate('jwt', { session: false }),
 	async (req, res, next) => {
 		try {
 			const { title, feature, description } = req.body;
