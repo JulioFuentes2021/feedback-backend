@@ -18,8 +18,12 @@ const feedbackSchema = {
         default: []
     },
     comment: {
-        type: [{ text: String, creator: String, mail: String, replies: [{ text: String, creator: String, mail: String }] }],
+        type: [{ text: String, creator: String, mail: String, replies: [{ text: String, creator: String, mail: String }], }],
         default: []
+    },
+    commentsLength: {
+        type: Number,
+        default: 0
     }
 };
 

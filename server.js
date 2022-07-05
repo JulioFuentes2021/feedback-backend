@@ -38,7 +38,7 @@ const sessionStore = MongoStore.create({
 	collection: "sessions",
 });
 
-app.use(timeout('5s'))
+// app.use(timeout('5s'))
 app.use(express.static('public'))
 app.use(cors({
 	credentials: true,

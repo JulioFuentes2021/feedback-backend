@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 router.get("/all", async (req, res) => {
 	const data = await Feedback.find({});
-	// res.json(data);
+	res.json(data);
 });
 
 

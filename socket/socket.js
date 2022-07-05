@@ -3,12 +3,9 @@ const passport = require('passport');
 const validatorHandler = require('../middleware/validator.handler');
 const { createFeedbackValidation } = require('../schemas/feedback.schema');
 
-const socket = (io) => {
-    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
-    // io.use(wrap(passport.initialize()));
-    // io.use(wrap(passport.session()))
-    io.use(wrap(passport.authenticate('jwt', { session: false })));
+const checkToken = (socket, next, io) => {
 
+    io.use(wrap(passport.authenticate('jwt', { session: false })));
     io.use((socket, next) => {
         console.log(socket.header)
         // next()
@@ -19,36 +16,67 @@ const socket = (io) => {
             next(new Error("Unauthorized"))
         }
     });
+}
+
+
+const socket = (io) => {
+    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
+    // io.use(wrap(passport.initialize()));
+    // io.use(wrap(passport.session()))
+    io.use(wrap(passport.authenticate('jwt', { session: false })));
+
+    io.use((socket, next) => {
+        // console.log('Socket from middleware', socket)
+        console.log('Socket.request.user', socket.request.user)
+        // next()
+        if (socket.request.user) {
+            next();
+        } else {
+            console.log("Error socket")
+            next(new Error("Unauthorized"))
+        }
+    });
+    io.use((socket, next) => {
+        console.log(socket)
+        next()
+    })
+
+    //!Create a context or redux to do the connection when the user makes login 
 
     io.on("connection", (socket) => {
         console.log(`User connected ${socket.id}`)
+        socket.disconnect.connect;
         // const all = await Feedback.find();
         socket.on("get", async () => {
-            const all = await Feedback.find();
+            const all = await Feedback.find({});
             const allFeedbacks = all.length;
-            socket.emit("suggestions", allFeedbacks)
-            socket.emit("getFeed", all)
+            io.emit("suggestions", allFeedbacks)
+            io.emit("getFeed", all)
         })
 
         socket.on("getSuggestions", async (data) => {
             // const comment = req.body.comment;
-            const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
+            const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $inc: { commentsLength: 1 }, $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
             console.log(socket.request.user)
 
+
             io.emit("receiverSuggestions", { username: socket.request.user.username, mail: socket.request.user.mail })
+            io.emit("updateComments")
         })
 
         socket.on("addReply", async (data) => {
             console.log(data)
             // const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment[2].replies: "something" } })
-            const feedback = await Feedback.findOne({ _id: data.feedbackId })
+            const feedback = await Feedback.findOneAndUpdate({ _id: data.feedbackId }, { $inc: { commentsLength: 1 } })
             // const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
             // const doc = Feedback.comment.id("62ba4ef587bf7203aa05cea6")
+            // feedback.commentsLength += 1
             feedback.comment.id(data.replyId).replies.push({ text: data.mail + " " + data.reply, creator: socket.request.user.username, mail: socket.request.user.mail })
             await feedback.save()
             console.log("reply", feedback.comment.id(data.replyId))
 
             io.emit("receiverSuggestions")
+            io.emit("updateComments")
             // console.log('REply Id', data.replyId)
         })
 
@@ -71,12 +99,6 @@ const socket = (io) => {
                     await Feedback.findOneAndUpdate({ _id: packet[1].id }, { $addToSet: { "test": [socket.request.user.id] } })
 
                 }
-            } else if (packet[0] === "addFeedback") {
-                const { error } = createFeedbackValidation.validate(packet[1])
-                if (error) {
-                    return next(new Error(error))
-                }
-                console.log('Validator handler')
             }
 
             next()
@@ -100,6 +122,11 @@ const socket = (io) => {
             const all = await Feedback.find({});
             io.emit("update", all)
             console.log('Id', socket.request.user)
+        })
+
+        io.use((socket, next) => {
+            console.log('ADD MIDDLEWARE WAS EXECUTED');
+            next();
         })
 
         socket.on("addFeedback", async (data) => {
