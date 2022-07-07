@@ -121,6 +121,7 @@ const socket = (io) => {
 
             const all = await Feedback.find({});
             io.emit("update", all)
+            io.emit("justUpvote")
             console.log('Id', socket.request.user)
         })
 

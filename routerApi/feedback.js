@@ -18,7 +18,17 @@ router.get("/all", async (req, res) => {
 	res.json(data);
 });
 
+router.get("/comments/:sort", async (req, res) => {
+	const { sort } = req.params;
+	const data = await Feedback.find({}).sort({ commentsLength: sort });
+	res.json(data);
+});
 
+router.get("/upvotes/:sort", async (req, res) => {
+	const { sort } = req.params;
+	const data = await Feedback.find({}).sort({ upvotes: sort });
+	res.json(data);
+});
 
 
 const authenticate = (req, res, next) => {
