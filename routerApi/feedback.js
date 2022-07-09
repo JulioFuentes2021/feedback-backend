@@ -18,6 +18,12 @@ router.get("/all", async (req, res) => {
 	res.json(data);
 });
 
+router.get("/:id", async (req, res) => {
+	const { id } = req.params;
+	const data = await Feedback.find({ _id: id });
+	res.json(data);
+});
+
 router.get("/comments/:sort", async (req, res) => {
 	const { sort } = req.params;
 	const data = await Feedback.find({}).sort({ commentsLength: sort });
@@ -100,6 +106,29 @@ router.post(
 		}
 	}
 );
+
+router.post('/edit/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+	try {
+		const mail = req.user.mail
+		const { id } = req.params;
+		// console.log('USER ID ', socket.request.user)
+		// const user = await User.findOne({ mail: mail })
+		const feedback = await Feedback.findOne({ _id: id });
+		console.log('FEed', feedback.createdBy)
+		console.log('FEed', mail)
+		if (!feedback.createdBy === mail) return res.status(404).json({ message: 'You are not the feedback creator' })
+		await Feedback.findByIdAndUpdate({ _id: req.body.id }, {
+			title: req.body.title,
+			feature: req.body.feature,
+			description: req.body.description,
+		})
+
+		return res.json({ message: 'Good' })
+	} catch (error) {
+		console.log(error)
+		res.status(404).json({ Error: error })
+	}
+})
 
 router.delete('/delete', async (req, res) => {
 	await Feedback.deleteMany()

@@ -24,7 +24,8 @@ const feedbackSchema = {
     commentsLength: {
         type: Number,
         default: 0
-    }
+    },
+    createdBy: String
 };
 
 const Feedback = mongoose.model("Feedback", feedbackSchema);

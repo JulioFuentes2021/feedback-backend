@@ -1,4 +1,5 @@
 const Feedback = require("../model/message");
+const User = require("../model/user");
 const passport = require('passport');
 const validatorHandler = require('../middleware/validator.handler');
 const { createFeedbackValidation } = require('../schemas/feedback.schema');
@@ -125,17 +126,13 @@ const socket = (io) => {
             console.log('Id', socket.request.user)
         })
 
-        io.use((socket, next) => {
-            console.log('ADD MIDDLEWARE WAS EXECUTED');
-            next();
-        })
-
         socket.on("addFeedback", async (data) => {
             console.log(data)
             const newFeedback = new Feedback({
                 title: data.title,
                 feature: data.feature,
                 description: data.description,
+                createdBy: socket.request.user.mail
                 // test: test
             });
             //Guarda la base de datos
@@ -145,6 +142,23 @@ const socket = (io) => {
             io.emit("update", all)
             const allFeedbacks = all.length;
             io.emit("suggestions", allFeedbacks)
+        })
+
+        socket.on("edit", async (data) => {
+            const mail = socket.request.user.mail
+            // console.log('USER ID ', socket.request.user)
+            // const user = await User.findOne({ mail: mail })
+            const feedback = await Feedback.findOne({ _id: data.id });
+            console.log('FEed', feedback)
+            console.log('FEed', mail)
+            if (!feedback.createdBy === mail) throw new Error('You are not the creator!')
+            await Feedback.findByIdAndUpdate({ _id: data.id }, {
+                title: data.title,
+                feature: data.feature,
+                description: data.description,
+            })
+
+            // console.log('User ', user)
         })
     })
 
