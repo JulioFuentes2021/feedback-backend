@@ -8,7 +8,7 @@ const checkToken = (socket, next, io) => {
 
     io.use(wrap(passport.authenticate('jwt', { session: false })));
     io.use((socket, next) => {
-        console.log(socket.header)
+        // console.log(socket.header)
         // next()
         if (socket.request.user) {
             next();
@@ -28,7 +28,7 @@ const socket = (io) => {
 
     io.use((socket, next) => {
         // console.log('Socket from middleware', socket)
-        console.log('Socket.request.user', socket.request.user)
+        // console.log('Socket.request.user', socket.request.user)
         // next()
         if (socket.request.user) {
             next();
@@ -37,10 +37,10 @@ const socket = (io) => {
             next(new Error("Unauthorized"))
         }
     });
-    io.use((socket, next) => {
-        console.log(socket)
-        next()
-    })
+    // io.use((socket, next) => {
+    //     console.log(socket)
+    //     next()
+    // })
 
     //!Create a context or redux to do the connection when the user makes login 
 
@@ -58,7 +58,7 @@ const socket = (io) => {
         socket.on("getSuggestions", async (data) => {
             // const comment = req.body.comment;
             const feedback = await Feedback.findByIdAndUpdate({ _id: data.id }, { $inc: { commentsLength: 1 }, $addToSet: { comment: { text: data.comment, creator: socket.request.user.username, mail: socket.request.user.mail } } })
-            console.log(socket.request.user)
+            // console.log(socket.request.user)
 
 
             io.emit("receiverSuggestions", { username: socket.request.user.username, mail: socket.request.user.mail })
@@ -149,15 +149,16 @@ const socket = (io) => {
             // console.log('USER ID ', socket.request.user)
             // const user = await User.findOne({ mail: mail })
             const feedback = await Feedback.findOne({ _id: data.id });
-            console.log('FEed', feedback)
+            console.log('FEed', feedback.createdBy)
             console.log('FEed', mail)
-            if (!feedback.createdBy === mail) throw new Error('You are not the creator!')
+            if (feedback.createdBy !== mail) throw new Error('You are not the creator!')
             await Feedback.findByIdAndUpdate({ _id: data.id }, {
                 title: data.title,
                 feature: data.feature,
                 description: data.description,
             })
-
+            io.emit('update')
+            io.emit('receiverSuggestions')
             // console.log('User ', user)
         })
     })
