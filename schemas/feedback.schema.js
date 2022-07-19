@@ -19,10 +19,17 @@ const loginAndSignInValidator = Joi.object({
     mail: mail.required(),
 });
 
-const loginValidator = Joi.object({
+const loginValidation = Joi.object({
     password: password.required(),
     username: username.required(),
-    mail: mail.required(),
+    // mail: mail.required(),
 });
 
-module.exports = { createFeedbackValidation, loginAndSignInValidator };
+const validateSchemaSortParams = Joi.any().valid("asc", "desc", "1", "-1")
+
+module.exports = {
+    createFeedbackValidation,
+    loginAndSignInValidator,
+    validateSchemaSortParams,
+    loginValidation
+};

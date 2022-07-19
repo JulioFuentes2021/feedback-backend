@@ -100,7 +100,11 @@ const socket = (io) => {
                     await Feedback.findOneAndUpdate({ _id: packet[1].id }, { $addToSet: { "test": [socket.request.user.id] } })
 
                 }
+            } else if (packet[0] === "addFeedback") {
+                console.log('PACKET', packet)
             }
+
+
 
             next()
         })
@@ -151,15 +155,20 @@ const socket = (io) => {
             const feedback = await Feedback.findOne({ _id: data.id });
             console.log('FEed', feedback.createdBy)
             console.log('FEed', mail)
-            if (feedback.createdBy !== mail) throw new Error('You are not the creator!')
-            await Feedback.findByIdAndUpdate({ _id: data.id }, {
-                title: data.title,
-                feature: data.feature,
-                description: data.description,
-            })
-            io.emit('update')
-            io.emit('receiverSuggestions')
+            // if (feedback.createdBy !== mail) throw new Error('You are not the creator!')
+            if (feedback.createdBy !== mail) {
+                io.to(socket.id).emit('editFail', 'Only the user who created the feedback can edit it.')
+            } else {
+                await Feedback.findByIdAndUpdate({ _id: data.id }, {
+                    title: data.title,
+                    feature: data.feature,
+                    description: data.description,
+                })
+                io.emit('update')
+                io.emit('receiverSuggestions')
+            }
             // console.log('User ', user)
+            // console.log(socket.id)
         })
     })
 

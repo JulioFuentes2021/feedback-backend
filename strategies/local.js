@@ -31,6 +31,18 @@ const localStrategyF = passport.use(new localStrategy(
 	}
 ))
 
+passport.serializeUser(function (user, cb) {
+	process.nextTick(function () {
+		cb(null, { id: user.id, username: user.username });
+	});
+});
+
+passport.deserializeUser(function (user, cb) {
+	process.nextTick(function () {
+		return cb(null, user);
+	});
+});
+
 // passport.use(passport.initialize());
 // passport.use(passport.session())
 

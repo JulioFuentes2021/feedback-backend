@@ -59,6 +59,7 @@ app.use(
 );
 
 require('./strategies/jwt') //!En platzi asi conectaron la estrategia
+require('./strategies/local') //!En platzi asi conectaron la estrategia
 app.use(passport.initialize());
 app.use(passport.session())
 
