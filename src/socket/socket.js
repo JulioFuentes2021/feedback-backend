@@ -47,6 +47,10 @@ const socket = (io) => {
     io.on("connection", (socket) => {
         console.log(`User connected ${socket.id}`)
         socket.disconnect.connect;
+
+        socket.on("reconnect", (attempt) => {
+            console.log('Attempt: ', attempt)
+        })
         // const all = await Feedback.find();
         socket.on("get", async () => {
             const all = await Feedback.find({});
@@ -117,16 +121,19 @@ const socket = (io) => {
             // const upvoteBeforeSum = await Feedback.findOne({ _id: id });
             // console.log('beforesum', upvoteBeforeSum)
             // await Feedback.updateOne({ id: id }, { $set: { "upvotes": upvoteBeforeSum.upvotes + 1 } })
-
+            let newFeed;
             if (socket.request.operation === "+") {
-                await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes + 1 } })
+                newFeed = await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes + 1 } })
             } else {
-                await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes - 1 } })
+                newFeed = await Feedback.findOneAndUpdate({ _id: id }, { $set: { "upvotes": socket.request.votes - 1 } })
             }
 
-            const all = await Feedback.find({});
-            io.emit("update", all)
+            // const all = await Feedback.find({});
+            // io.to(socket.id).emit("update", data.sortBy)
+            // socket.broadcast.emit("update")
+            io.emit("update")
             io.emit("justUpvote")
+            console.log(data.sortBy)
             console.log('Id', socket.request.user)
         })
 
