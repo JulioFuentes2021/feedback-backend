@@ -5,10 +5,10 @@ const signIn = require("./signIn");
 const refresh = require('./refreshToken');
 
 const routerApi = app => {
-	app.use("/feedback", feedback);
-	app.use("/auth", authRoute);
-	app.use("/sign-in", signIn);
-	app.use("/refresh", refresh);
+	app.use("/api/v1/feedback", feedback);
+	app.use("/api/v1/auth", authRoute);
+	app.use("/api/v1/sign-in", signIn);
+	app.use("/api/v1/refresh", refresh);
 };
 
 module.exports = routerApi;
