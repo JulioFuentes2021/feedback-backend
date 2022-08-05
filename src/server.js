@@ -77,7 +77,6 @@ mongoose.connect(
 // app.use(bodyParser.json());
 
 
-// app.use(express.json);
 
 app.get("/", (req, res) => {
 	res.send("Hello, world!");
@@ -95,7 +94,7 @@ const httpServer = createServer(app);
 // app.listen(port, () => console.log("Server is ready..."));
 const io = new Server(httpServer, {
 	cors: {
-		origin: ["http://localhost:3000"],
+		origin: ["http://localhost:3000", "https://editor.swagger.io/"],
 		// allowedHeaders: ["my-custom-header"],
 		credentials: true
 	}

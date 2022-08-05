@@ -16,7 +16,7 @@ const socket = (io) => {
 
     io.on("connection", (socket) => {
         console.log(`User connected ${socket.id}`)
-        socket.disconnect.connect;
+        // socket.disconnect.connect;
 
         socket.on("get", async () => {
             const all = await Feedback.find({});
